@@ -1,0 +1,20 @@
+{
+  "id": "classic",
+  "name": "Classic",
+  "quotes": [
+    { "text": "The best way out is always through.", "attribution": "Robert Frost" },
+    { "text": "Well begun is half done.", "attribution": "Aristotle" },
+    { "text": "Simplicity is the ultimate sophistication.", "attribution": "Leonardo da Vinci" },
+    { "text": "What we think, we become.", "attribution": "Buddha" },
+    { "text": "Fortune favors the bold.", "attribution": "Virgil" },
+    { "text": "No wind favors a ship without a destination.", "attribution": "Montaigne" },
+    { "text": "Knowing yourself is the beginning of all wisdom.", "attribution": "Aristotle" },
+    { "text": "The obstacle is the way.", "attribution": "Marcus Aurelius" },
+    { "text": "To see a world in a grain of sand.", "attribution": "William Blake" },
+    { "text": "We are what we repeatedly do.", "attribution": "Will Durant" },
+    { "text": "Still waters run deep.", "attribution": "Proverb" },
+    { "text": "Nothing great was ever achieved without enthusiasm.", "attribution": "Emerson" },
+    { "text": "The unexamined life is not worth living.", "attribution": "Socrates" },
+    { "text": "Light tomorrow with today.", "attribution": "Elizabeth Barrett Browning" }
+  ]
+}

@@ -1,0 +1,192 @@
+# XcodeGen manifest. `make project` regenerates Clay.xcodeproj from this.
+# Keep the manifest as the source of truth — never edit the generated .xcodeproj
+# by hand or the next `make project` will clobber it.
+#
+# Clay is a widget & home-screen customization studio: compose widgets from
+# styled blocks, customize every visual layer, add them via WidgetKit.
+# It ships as two targets plus shared code:
+#
+#   Clay           — the container app (App Store product). Widget gallery,
+#                    live-preview editor, themes, setups, permission flows.
+#   ClayWidgets    — the WidgetKit extension rendering saved recipes on the
+#                    home screen (small/medium/large) and lock screen
+#                    (accessory families).
+#   Sources/ClayKit — shared recipe model + App Group storage + block modules
+#                    + the one true renderer, compiled into BOTH targets
+#                    (no dynamic framework, so no extension rpath/embedding
+#                    pitfalls).
+#
+# The processes are isolated; they share state only through the
+# App Group `group.ltd.anti.clay`.
+
+name: Clay
+options:
+  bundleIdPrefix: ltd.anti
+  # 17.0 is enough: no Live Activities (Cling's 17.2 reason). Everything Clay
+  # needs — AppIntentConfiguration, containerBackground(for: .widget),
+  # @Observable, WeatherKit, accessory families — is ≤ 17.0, and it matches
+  # the iUX-ios package floor.
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    # Same Apple Developer team as the rest of our apps. Override at build time
+    # with `DEVELOPMENT_TEAM=<id>` if a fork needs a different team.
+    DEVELOPMENT_TEAM: 8248296AJX
+    CODE_SIGN_STYLE: Automatic
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+
+# Local SwiftPM dependency on the iOS UX library. iUX-ios lives one level up.
+packages:
+  iUX-ios:
+    path: ../iUX-iOS
+
+targets:
+  # ----------------------------------------------------------------
+  # Container app — the App Store product.
+  # ----------------------------------------------------------------
+  Clay:
+    type: application
+    platform: iOS
+    sources:
+      - Sources/Clay
+      # Shared code compiled directly into the app.
+      - Sources/ClayKit
+      # Asset catalog must be a source (not a plain resource) so Xcode runs
+      # actool over it and produces Assets.car in the bundle.
+      - Resources/Assets.xcassets
+      # Bundled quote packs (quotes-*.json land at the bundle root).
+      - Resources/Quotes
+      # Privacy manifest (required by App Store since May 2024). Lives in a
+      # per-target folder so it lands at the bundle root as PrivacyInfo.xcprivacy.
+      - Resources/Privacy/App/PrivacyInfo.xcprivacy
+    info:
+      path: Resources/Clay-Info.plist
+      properties:
+        CFBundleDisplayName: Clay
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        # Export compliance: Clay implements no encryption of its own.
+        # Auto-clears ASC's "Missing Compliance" prompt.
+        ITSAppUsesNonExemptEncryption: false
+        # Calendar block: next events on a widget. iOS 17 full-access key.
+        NSCalendarsFullAccessUsageDescription: >-
+          Clay shows your upcoming events on calendar widgets you design.
+        # Steps block via HealthKit (read-only).
+        NSHealthShareUsageDescription: >-
+          Clay shows your step count on widgets you design.
+        # Weather block: WeatherKit needs a coarse location fix.
+        NSLocationWhenInUseUsageDescription: >-
+          Clay uses your location to show local weather on widgets you design.
+        # Photo block: pick images for photo widgets.
+        NSPhotoLibraryUsageDescription: >-
+          Clay lets you put photos from your library on widgets you design.
+        # Setups: save the suggested wallpaper so the user can set it.
+        NSPhotoLibraryAddUsageDescription: >-
+          Clay saves wallpapers you choose to your photo library.
+        # Deep links: clay://recipe/<uuid> (edit from a widget tap),
+        # clay://enable/<need> (permission placeholders on widgets).
+        CFBundleURLTypes:
+          - CFBundleURLName: ltd.anti.clay
+            CFBundleURLSchemes:
+              - clay
+        UILaunchScreen:
+          UIColorName: ""
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    entitlements:
+      path: Resources/Clay.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.ltd.anti.clay
+        com.apple.developer.weatherkit: true
+        com.apple.developer.healthkit: true
+    dependencies:
+      - package: iUX-ios
+        product: iUXiOS
+      # Embeds the extension into the app bundle's PlugIns dir.
+      - target: ClayWidgets
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ltd.anti.clay
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  # ----------------------------------------------------------------
+  # Widget extension — renders saved recipes on home & lock screens.
+  # ----------------------------------------------------------------
+  ClayWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Sources/ClayWidgets
+      # Same shared code, compiled into the extension too.
+      - Sources/ClayKit
+      # The extension picks quotes at timeline time — packs ship in BOTH bundles.
+      - Resources/Quotes
+      - Resources/Privacy/Widgets/PrivacyInfo.xcprivacy
+    info:
+      path: Resources/ClayWidgets-Info.plist
+      properties:
+        CFBundleDisplayName: Clay
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        # Weather block: lets the extension resolve a coarse location for
+        # WeatherKit without bouncing through the app.
+        NSWidgetWantsLocation: true
+        NSLocationWhenInUseUsageDescription: >-
+          Clay uses your location to show local weather on widgets you design.
+    entitlements:
+      path: Resources/ClayWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.ltd.anti.clay
+        com.apple.developer.weatherkit: true
+        com.apple.developer.healthkit: true
+    dependencies:
+      - package: iUX-ios
+        product: iUXiOS
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ltd.anti.clay.widgets
+        TARGETED_DEVICE_FAMILY: "1,2"
+
+  # ----------------------------------------------------------------
+  # Unit tests — pure ClayKit model/logic tests, hosted by the app.
+  # ----------------------------------------------------------------
+  ClayTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - Tests/ClayKitTests
+    dependencies:
+      - target: Clay
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ltd.anti.clay.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Clay.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Clay
+        BUNDLE_LOADER: $(TEST_HOST)
+
+schemes:
+  Clay:
+    build:
+      targets:
+        Clay: all
+    test:
+      targets:
+        - ClayTests

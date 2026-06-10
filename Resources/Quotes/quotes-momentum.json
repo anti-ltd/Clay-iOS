@@ -1,0 +1,18 @@
+{
+  "id": "momentum",
+  "name": "Momentum",
+  "quotes": [
+    { "text": "Start where you are. Use what you have.", "attribution": "Arthur Ashe" },
+    { "text": "Done is better than perfect.", "attribution": null },
+    { "text": "Small steps every day.", "attribution": null },
+    { "text": "Action is the foundational key to all success.", "attribution": "Picasso" },
+    { "text": "Make it happen.", "attribution": null },
+    { "text": "The secret of getting ahead is getting started.", "attribution": "Mark Twain" },
+    { "text": "Energy and persistence conquer all things.", "attribution": "Benjamin Franklin" },
+    { "text": "You miss 100% of the shots you don't take.", "attribution": "Wayne Gretzky" },
+    { "text": "One day or day one.", "attribution": null },
+    { "text": "Discipline is choosing what you want most.", "attribution": "Abraham Lincoln" },
+    { "text": "Progress, not perfection.", "attribution": null },
+    { "text": "The future depends on what you do today.", "attribution": "Gandhi" }
+  ]
+}

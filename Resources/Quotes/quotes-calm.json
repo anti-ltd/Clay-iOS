@@ -1,0 +1,18 @@
+{
+  "id": "calm",
+  "name": "Calm",
+  "quotes": [
+    { "text": "Breathe. You're exactly where you need to be.", "attribution": null },
+    { "text": "Nature does not hurry, yet everything is accomplished.", "attribution": "Lao Tzu" },
+    { "text": "Within you, there is a stillness.", "attribution": "Hermann Hesse" },
+    { "text": "Be here now.", "attribution": "Ram Dass" },
+    { "text": "Quiet the mind, and the soul will speak.", "attribution": "Ma Jaya" },
+    { "text": "Rest is not idleness.", "attribution": "John Lubbock" },
+    { "text": "This too shall pass.", "attribution": "Proverb" },
+    { "text": "Wherever you go, there you are.", "attribution": "Jon Kabat-Zinn" },
+    { "text": "Slow is smooth, smooth is fast.", "attribution": null },
+    { "text": "The quieter you become, the more you can hear.", "attribution": "Ram Dass" },
+    { "text": "Let it be.", "attribution": null },
+    { "text": "Peace comes from within.", "attribution": "Buddha" }
+  ]
+}
