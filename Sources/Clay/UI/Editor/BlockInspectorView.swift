@@ -14,6 +14,8 @@ struct BlockInspectorView: View {
            let module = BlockRegistry.module(for: binding.wrappedValue.kind) {
             ScrollView {
                 VStack(spacing: UX.cardSpacing) {
+                    inspectorPreview
+
                     CardSection(module.displayName) {
                         module.configEditor(instance: binding)
                     }
@@ -41,11 +43,40 @@ struct BlockInspectorView: View {
             .navigationTitle(module.displayName)
             .navigationBarTitleDisplayMode(.inline)
         } else {
-            EmptyStateCard(
-                symbol: "questionmark.square.dashed",
-                title: "Block unavailable",
-                message: "This block was made in a newer version of Clay.")
-                .padding(UX.screenPadding)
+            inspectorUnavailable
         }
+    }
+
+    /// Live thumbnail of the whole widget, pinned above the editor so config
+    /// edits show up immediately. Follows the editor's previewed family and
+    /// ticks each second so clocks run. `@Bindable editor` re-renders on every
+    /// autosaved mutation, so no manual refresh.
+    private var inspectorPreview: some View {
+        let family = editor.previewFamily
+
+        return TimelineView(.periodic(from: .now, by: 1)) { timeline in
+            ScaledWidgetPreview(
+                recipe: editor.draft,
+                family: family,
+                fitWidth: 170,
+                snapshot: .placeholder(date: timeline.date))
+                .background {
+                    if family.isAccessory {
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(.white.opacity(0.12))
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .animation(UX.Motion.morph, value: editor.draft.theme)
+        }
+    }
+
+    @ViewBuilder
+    private var inspectorUnavailable: some View {
+        EmptyStateCard(
+            symbol: "questionmark.square.dashed",
+            title: "Block unavailable",
+            message: "This block was made in a newer version of Clay.")
+            .padding(UX.screenPadding)
     }
 }

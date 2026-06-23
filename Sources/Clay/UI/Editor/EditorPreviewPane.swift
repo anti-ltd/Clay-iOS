@@ -21,21 +21,27 @@ struct EditorPreviewPane: View {
             OptionChips(options: Self.familyOptions, selection: $editor.previewFamily)
                 .onChange(of: editor.previewFamily) { Haptics.light() }
 
-            Spacer(minLength: 0)
-
-            TimelineView(.periodic(from: .now, by: 1)) { timeline in
-                preview(date: timeline.date)
+            // Scale the widget to fit the space left below the chips. At exact
+            // point size the Large family (382pt tall) overflows the pane and
+            // shoves the chip row off the top edge — unreachable. GeometryReader
+            // bounds the fit so every family stays inside and chips stay put.
+            GeometryReader { geo in
+                TimelineView(.periodic(from: .now, by: 1)) { timeline in
+                    preview(date: timeline.date, available: geo.size)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-
-            Spacer(minLength: 0)
         }
         .padding(.top, 8)
     }
 
     @ViewBuilder
-    private func preview(date: Date) -> some View {
+    private func preview(date: Date, available: CGSize) -> some View {
         let family = editor.previewFamily
         let size = WidgetFamilyMetrics.pointSize(for: family)
+        let scale = available.width > 0 && available.height > 0
+            ? min(available.width / size.width, available.height / size.height, 1)
+            : 1
 
         WidgetRecipeView(
             recipe: editor.draft,
@@ -51,6 +57,8 @@ struct EditorPreviewPane: View {
                         .fill(.white.opacity(0.12))
                 }
             }
+            .scaleEffect(scale)
+            .frame(width: size.width * scale, height: size.height * scale)
             .animation(UX.Motion.morph, value: editor.draft.theme)
             .animation(UX.Motion.morph, value: family)
     }

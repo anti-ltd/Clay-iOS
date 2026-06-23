@@ -32,4 +32,7 @@ public struct BlockKind: RawRepresentable, Codable, Hashable, Sendable {
     public static let countdown = BlockKind(rawValue: "countdown")
     public static let quote = BlockKind(rawValue: "quote")
     public static let steps = BlockKind(rawValue: "steps")
+
+    // Fun blocks — decorative, self-contained, no data needs.
+    public static let aquarium = BlockKind(rawValue: "aquarium")
 }

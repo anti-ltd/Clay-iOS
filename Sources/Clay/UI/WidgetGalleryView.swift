@@ -16,9 +16,11 @@ struct WidgetGalleryView: View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: UX.cardSpacing) {
                 ForEach(model.recipes) { recipe in
-                    RecipeCard(recipe: recipe)
-                        .onTapGesture { path.append(recipe.id) }
-                        .contextMenu {
+                    NavigationLink(value: recipe.id) {
+                        RecipeCard(recipe: recipe)
+                    }
+                    .buttonStyle(.plain)
+                    .contextMenu {
                             Button {
                                 model.duplicate(recipe)
                             } label: {

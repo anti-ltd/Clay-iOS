@@ -70,7 +70,7 @@ targets:
       properties:
         CFBundleDisplayName: Clay
         CFBundleShortVersionString: "1.0"
-        CFBundleVersion: "1"
+        CFBundleVersion: "2"
         # Export compliance: Clay implements no encryption of its own.
         # Auto-clears ASC's "Missing Compliance" prompt.
         ITSAppUsesNonExemptEncryption: false
@@ -80,6 +80,10 @@ targets:
         # Steps block via HealthKit (read-only).
         NSHealthShareUsageDescription: >-
           Clay shows your step count on widgets you design.
+        # Read-only, but the healthkit entitlement makes ASC require the
+        # write-purpose string too (validation 90683).
+        NSHealthUpdateUsageDescription: >-
+          Clay only reads your step count to display it on widgets; it does not write any health data.
         # Weather block: WeatherKit needs a coarse location fix.
         NSLocationWhenInUseUsageDescription: >-
           Clay uses your location to show local weather on widgets you design.
@@ -142,7 +146,7 @@ targets:
       properties:
         CFBundleDisplayName: Clay
         CFBundleShortVersionString: "1.0"
-        CFBundleVersion: "1"
+        CFBundleVersion: "2"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
         # Weather block: lets the extension resolve a coarse location for
@@ -150,6 +154,13 @@ targets:
         NSWidgetWantsLocation: true
         NSLocationWhenInUseUsageDescription: >-
           Clay uses your location to show local weather on widgets you design.
+        # Steps block: the extension reads step count via ClayKit's
+        # StepsProvider, so it carries the healthkit entitlement and needs
+        # both purpose strings (read + the ASC-required write string, 90683).
+        NSHealthShareUsageDescription: >-
+          Clay shows your step count on widgets you design.
+        NSHealthUpdateUsageDescription: >-
+          Clay only reads your step count to display it on widgets; it does not write any health data.
     entitlements:
       path: Resources/ClayWidgets.entitlements
       properties:

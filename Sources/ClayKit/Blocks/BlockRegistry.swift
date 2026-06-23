@@ -20,6 +20,7 @@ public enum BlockRegistry {
         BlockHandle(CountdownBlock.self),
         BlockHandle(QuoteBlock.self),
         BlockHandle(PhotoBlock.self),
+        BlockHandle(AquariumBlock.self),
     ]
 
     private static let byKind: [BlockKind: BlockHandle] =

@@ -30,13 +30,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSCalendarsFullAccessUsageDescription</key>
 	<string>Clay shows your upcoming events on calendar widgets you design.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Clay shows your step count on widgets you design.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Clay only reads your step count to display it on widgets; it does not write any health data.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Clay uses your location to show local weather on widgets you design.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

@@ -23,6 +23,9 @@ struct ClayHomeWidget: Widget {
         .configurationDisplayName("Clay Widget")
         .description("A widget you designed in Clay.")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        // Let blocks bleed to the widget edge — the Layout padding control is
+        // the only inset. Without this iOS adds its own ~16pt content margins.
+        .contentMarginsDisabled()
     }
 }
 

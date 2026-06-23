@@ -18,7 +18,7 @@ struct RootView: View {
                         }
                     }
             }
-            .tabItem { Label("My Widgets", systemImage: "square.grid.2x2") }
+            .tabItem { Label("Widgets", systemImage: "square.grid.2x2") }
             .tag("widgets")
 
             NavigationStack {

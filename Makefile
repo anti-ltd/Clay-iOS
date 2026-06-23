@@ -21,7 +21,7 @@ SIM_DEST       := "platform=iOS Simulator,name=$(SIM_NAME)"
 # Device selection. If exactly one iPhone is paired we use it automatically;
 # pass DEVICE=<udid> or DEVICE_NAME="My iPhone" to force a specific one.
 DEVICE         ?=
-DEVICE_NAME    ?=
+DEVICE_NAME    ?= OSV1
 
 .PHONY: all project icon build run sim install clean stop help test \
         device device-install device-launch build-device
@@ -113,7 +113,8 @@ DEVICE_UDID = $(shell \
 		xcrun devicectl list devices 2>/dev/null \
 			| awk -v name="$(DEVICE_NAME)" '\
 				/^----/ {next} \
-				$$0 !~ /physical/ {next} \
+				!/physical/ {next} \
+				!/connected| available/ {next} \
 				name != "" && index($$0, name) == 0 {next} \
 				{ \
 					if (match($$0, /[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}/)) { \
